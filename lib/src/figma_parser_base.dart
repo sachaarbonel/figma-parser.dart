@@ -86,81 +86,6 @@ class Component {
       };
 }
 
-class Document {
-  List<DocumentChild> children;
-  String id;
-  String name;
-  String type;
-
-  Document({
-    this.children,
-    this.id,
-    this.name,
-    this.type,
-  });
-
-  factory Document.fromJson(Map<String, dynamic> json) => new Document(
-        children: new List<DocumentChild>.from(
-            json["children"].map((x) => DocumentChild.fromJson(x))),
-        id: json["id"],
-        name: json["name"],
-        type: json["type"],
-      );
-
-  Map<String, dynamic> toJson() => {
-        "children": new List<dynamic>.from(children.map((x) => x.toJson())),
-        "id": id,
-        "name": name,
-        "type": type,
-      };
-}
-
-class DocumentChild {
-  Color backgroundColor;
-  List<Child> children;
-  String id;
-  String name;
-  dynamic prototypeStartNodeId;
-  Type type;
-  List<dynamic> exportSettings;
-
-  DocumentChild({
-    this.backgroundColor,
-    this.children,
-    this.id,
-    this.name,
-    this.prototypeStartNodeId,
-    this.type,
-    this.exportSettings,
-  });
-
-  factory DocumentChild.fromJson(Map<String, dynamic> json) =>
-      new DocumentChild(
-        backgroundColor: Color.fromJson(json["backgroundColor"]),
-        children: new List<Child>.from(
-            json["children"].map((x) => Child.fromJson(x))),
-        id: json["id"],
-        name: json["name"],
-        prototypeStartNodeId: json["prototypeStartNodeID"],
-        type: typeValues.map[json["type"]],
-        exportSettings: json["exportSettings"] == null
-            ? null
-            : new List<dynamic>.from(json["exportSettings"].map((x) => x)),
-      );
-
-  Map<String, dynamic> toJson() => {
-        "backgroundColor": backgroundColor.toJson(),
-        "children": new List<dynamic>.from(children.map((x) => x.toJson())),
-        "id": id,
-        "name": name,
-        "prototypeStartNodeID": prototypeStartNodeId,
-        "type": typeValues.reverse[type],
-        "exportSettings": exportSettings == null
-            ? null
-            : new List<dynamic>.from(exportSettings.map((x) => x)),
-      };
-}
-
 class Color {
   double a;
   double b;
@@ -403,12 +328,12 @@ final booleanOperationValues = new EnumValues({
   "SUBTRACT": BooleanOperation.SUBTRACT
 });
 
-class Child {
+class Document {
   AbsoluteBoundingBox absoluteBoundingBox;
   List<Fill> background;
   Color backgroundColor;
   BlendMode blendMode;
-  List<Child> children;
+  List<Document> children;
   bool clipsContent;
   Constraints constraints;
   List<EffectElement> effects;
@@ -434,8 +359,9 @@ class Child {
   bool visible;
   List<dynamic> layoutGrids;
   bool isMask;
+  dynamic prototypeStartNodeId;
 
-  Child({
+  Document({
     this.absoluteBoundingBox,
     this.background,
     this.backgroundColor,
@@ -466,9 +392,10 @@ class Child {
     this.visible,
     this.layoutGrids,
     this.isMask,
+    this.prototypeStartNodeId,
   });
 
-  factory Child.fromJson(Map<String, dynamic> json) => new Child(
+  factory Document.fromJson(Map<String, dynamic> json) => new Document(
         absoluteBoundingBox:
             AbsoluteBoundingBox.fromJson(json["absoluteBoundingBox"]),
         background: json["background"] == null
@@ -481,8 +408,8 @@ class Child {
         blendMode: blendModeValues.map[json["blendMode"]],
         children: json["children"] == null
             ? null
-            : new List<Child>.from(
-                json["children"].map((x) => Child.fromJson(x))),
+            : new List<Document>.from(
+                json["children"].map((x) => Document.fromJson(x))),
         clipsContent:
             json["clipsContent"] == null ? null : json["clipsContent"],
         constraints: Constraints.fromJson(json["constraints"]),
@@ -536,6 +463,7 @@ class Child {
             ? null
             : new List<dynamic>.from(json["layoutGrids"].map((x) => x)),
         isMask: json["isMask"] == null ? null : json["isMask"],
+        prototypeStartNodeId: json["prototypeStartNodeID"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -590,6 +518,7 @@ class Child {
             ? null
             : new List<dynamic>.from(layoutGrids.map((x) => x)),
         "isMask": isMask == null ? null : isMask,
+        "prototypeStartNodeID": prototypeStartNodeId
       };
 }
 
