@@ -1,12 +1,36 @@
-// To parse this JSON data, do
-//
-//     final figma = figmaFromJson(jsonString);
-
+import 'package:http/http.dart' as http;
+import 'dart:io';
 import 'dart:convert';
 
-Figma figmaFromJson(String str) {
-  final jsonData = json.decode(str);
-  return Figma.fromJson(jsonData);
+Figma figmaFromFile(String node_id) {
+  String file = _read_file();
+  final jsonData = jsonDecode(file);
+  return Figma.fromJson(jsonData["nodes"]["0:${node_id.substring(4)}"]);
+}
+
+Figma _figmaFromJson(String file, String node_id) {
+  final jsonData = jsonDecode(file);
+  return Figma.fromJson(jsonData["nodes"]["0:${node_id.substring(4)}"]);
+}
+
+Future<Figma> getFigmaFromNetwork(
+    String token, String file_id, String node_id) async {
+  Map<String, String> header = {"X-FIGMA-TOKEN": token};
+  final response = await http.get(
+    'https://api.figma.com/v1/files/$file_id/nodes?ids=$node_id',
+    headers: header,
+  );
+  final figma = _figmaFromJson(response.body, node_id);
+  await _save_file(response);
+  return figma;
+}
+
+void _save_file(http.Response response) async {
+  await File('figma.json').writeAsString(response.body);
+}
+
+String _read_file() {
+  return File('figma.json').readAsStringSync();
 }
 
 String figmaToJson(Figma data) {
@@ -36,7 +60,7 @@ class Figma {
   });
 
   factory Figma.fromJson(Map<String, dynamic> json) => new Figma(
-        components: new Map.from(json["components"]).map((k, v) =>
+        components: new Map.from(json["components"])?.map((k, v) =>
             new MapEntry<String, Component>(k, Component.fromJson(v))),
         document: Document.fromJson(json["document"]),
         lastModified: json["lastModified"],
